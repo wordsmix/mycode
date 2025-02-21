@@ -1,0 +1,148 @@
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <dos.h>
+
+#define FILEDIR "E:\\progs\\tc\\bin\\ashu\\lisp\\readme.txt"
+
+FILE *fp;
+char chr[10];
+
+typedef struct node *nodeptr;
+struct node 
+{
+	char element[100];
+	nodeptr next;
+};
+
+typedef struct nnode *nnodeptr;
+struct nnode
+{
+	nodeptr element;
+	nnodeptr next;
+};
+
+nodeptr head , result;
+nnodeptr nhead;
+
+void initialize()
+{
+	head = (nodeptr)malloc(sizeof(struct node));
+	head->next=NULL;
+
+	result = (nodeptr)malloc(sizeof(struct node));
+	result->next=NULL;
+	
+	nhead = (nnodeptr)malloc(sizeof(struct nnode));
+	nhead->next=NULL;
+}
+
+void printnode(nodeptr start)
+{
+	if (start->next==NULL)
+		printf("List is null\n");
+	else
+		for(nodeptr tmp=start->next;tmp!=NULL;tmp=tmp->next)
+		{
+			printf("%s ",tmp->element);
+		}
+
+}
+
+void printnnode(nnodeptr start)
+{
+	if (start->next==NULL)
+		printf("Nested List is null\n");
+	else
+		for(nnodeptr tmp=start;tmp!=NULL;tmp=tmp->next)
+		{
+			printnode(tmp->element);
+		}
+
+}
+
+nodeptr insert(nodeptr start, char* element)
+{
+	nodeptr newnode;
+	for(nodeptr tmp=start;tmp->next!=NULL;tmp=tmp->next);
+	newnode = (nodeptr)malloc(sizeof(struct node));
+	strcpy(newnode->element,element);
+	newnode->next=NULL;
+	tmp->next=newnode;
+	return start;
+}
+
+void main ()
+{
+	void evaluate(nodeptr);
+	char arr[100][100];
+	int counter = 1,last_element;
+	clrscr();
+	initialize();
+	fp=fopen(FILEDIR,"r");
+	if (fp==NULL)
+    {
+		printf("File not found\n");
+	    exit(0);
+    }
+	printf("\n");
+
+	while (!feof(fp))
+	{
+		fscanf(fp,"%s",chr);
+		strcpy(arr[counter],chr);
+	     //	printf("\ntesting1%s2%s3\n",chr,arr[counter]);
+		last_element = counter;
+		counter=counter+1;
+	}
+	for (int i=2;i<last_element ;i++ )
+	{
+		head=insert(head,arr[i]);
+	}
+	printf("\nPrinting array\n");
+	for (i=2;i<last_element ;i++ )
+	{
+		printf("%s ",arr[i]);
+	}
+
+
+	printf("\nPrinting list\n");
+	printnode(head);
+	printf("\nPrinting nested list\n");
+	printnnode(nhead);
+
+	evaluate(head->next);
+
+	printf("\nPrinting result\n");
+	printnode(result);
+
+ getch();
+}
+
+void evaluate(nodeptr start)
+{
+	char* keywords="first second third car cdr ";
+	nodeptr temp;
+
+    printf("\nStart->ele=XXX%sXXX keywords = XXXX%sXXXX strstr = %s",start->element,keywords,strstr(keywords,start->element));
+	if (strstr(keywords,start->element))
+	{
+		if (strcmp(start->element,"first")==0)
+		{
+		/*	temp=(nodeptr)malloc(sizeof(struct node));
+			strcpy(temp->element,head->next->element);
+			temp->next=NULL;
+			*/
+			printf("\nim here ashu\n");
+			result=insert(result,head->next->next->element);
+		}
+		else { printf("\nmajot trouble%d\n",strcmp(start->element,"first"));}
+	}
+	else 
+	{
+		printf("\nim here\n");
+	}
+
+}
+
